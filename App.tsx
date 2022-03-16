@@ -1,20 +1,18 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import useCachedResources from './hooks/useCachedResources';
+import Navigation from './navigation';
 
 export default function App() {
+
+  const isLoaded = useCachedResources();
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    isLoaded ?
+      <>
+        <Navigation />
+        <StatusBar style="auto" />
+      </> 
+    : null
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
