@@ -15,7 +15,13 @@ export default function HomeScreen({navigation}: NativeStackHeaderProps) {
             <FlatList 
                 data={data as unknown as Workout[]}
                 keyExtractor={item => item.slug}
-                renderItem = {WorkoutItem}
+                renderItem = {({item}) => {
+                    return (
+                        <WorkoutItem
+                            item={item}
+                            onPress={() => console.log(`${item.name} pressed`)}
+                        />
+                     )}}
             />
             
         </View>

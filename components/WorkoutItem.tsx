@@ -1,14 +1,19 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 import { Workout } from "../types/data";
+import { formatSec, secToMin } from "../utils/time";
 
-export default function WorkoutItem({item}: {item: Workout}){
+export default function WorkoutItem({item, onPress}: {item: Workout, onPress: () => void}){
 
     return (
-        <View style={styles.container}> 
-            <Text style={styles.name}>{item.name}</Text>
-            <Text style={styles.duration}>Duration: {item.duration}</Text>
-            <Text style={styles.difficulty}>Difficulty: {item.difficulty}</Text>
-        </View>
+        <Pressable
+            onPress={onPress}
+            >
+            <View style={styles.container}> 
+                <Text style={styles.name}>{item.name}</Text>
+                <Text style={styles.duration}>Duration: {formatSec(item.duration)}</Text>
+                <Text style={styles.difficulty}>Difficulty: {item.difficulty}</Text>
+            </View>
+        </Pressable>
     );
 
 }
