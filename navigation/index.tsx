@@ -4,6 +4,7 @@ import { FontAwesome, Entypo } from '@expo/vector-icons';
 import { NavigationContainer } from "@react-navigation/native";
 import HomeScreen from "../screens/HomeScreen";
 import PlannerScreen from "../screens/PlannerScreen";
+import WorkoutDetailsScreen from "../screens/WorkoutDetails";
 
 
 export default function Navigation(){
@@ -21,6 +22,7 @@ function RootNavigator() {
     return (
         <Stack.Navigator>
                 <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
+                <Stack.Screen name="WorkoutDetail" component={WorkoutDetailsScreen} options={{title: "Workout Details"}} />
         </Stack.Navigator>
     );
 }
