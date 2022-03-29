@@ -1,8 +1,14 @@
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import { View, Text, StyleSheet, Pressable, StyleProp, ViewStyle } from "react-native";
 import { Workout } from "../types/data";
 import { formatSec, secToMin } from "../utils/time";
 
-export default function WorkoutItem({item, onPress}: {item: Workout, onPress: () => void}){
+export default function WorkoutItem({item, onPress, children, childStyles = {}}: {
+    item: Workout,
+    onPress?: () => void,
+    children?: React.ReactNode,
+    childStyles?: StyleProp<ViewStyle>
+
+     }){
 
     return (
         <Pressable
@@ -12,6 +18,13 @@ export default function WorkoutItem({item, onPress}: {item: Workout, onPress: ()
                 <Text style={styles.name}>{item.name}</Text>
                 <Text style={styles.duration}>Duration: {formatSec(item.duration)}</Text>
                 <Text style={styles.difficulty}>Difficulty: {item.difficulty}</Text>
+
+                {
+                    children && 
+                    <View style={childStyles}>
+                        {children}
+                    </View>
+                }
             </View>
         </Pressable>
     );

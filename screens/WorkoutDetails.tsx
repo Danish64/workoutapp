@@ -2,6 +2,10 @@ import { StyleSheet, Text, View } from "react-native";
 import { NativeStackHeaderProps } from "@react-navigation/native-stack";
 import { useWorkoutBySlug } from "../hooks/useWorkoutBySlug";
 import { PressableText } from "../components/styled/PressableText";
+import { Modal } from "../components/styled/Modal";
+import { formatSec } from "../utils/time";
+import { FontAwesome } from "@expo/vector-icons";
+import WorkoutItem from "../components/WorkoutItem";
 
 type DetailParams = {
     route: {
@@ -14,7 +18,7 @@ type DetailParams = {
 type Navigation = NativeStackHeaderProps & DetailParams
 
 export default function WorkoutDetailsScreen({navigation, route}: Navigation) {
-
+    
     const { slug } = route.params;
 
     const workout = useWorkoutBySlug(slug);
@@ -26,13 +30,44 @@ export default function WorkoutDetailsScreen({navigation, route}: Navigation) {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>{workout.name}</Text>
+            <WorkoutItem 
+                item={workout}
+                childStyles={{ marginTop: 10 }}
+            >
             
-            <PressableText 
-                text="Check Sequence"
-                onPress={() => alert("ModalOpening")}
+                <Modal activator = {({handleOpen}) => 
+                    <PressableText 
+                        text="Check Sequence"
+                        onPress={handleOpen}
+                    />}
+                >
+                    <View>
+                        {
+                            workout.sequence.map((item, idx) => 
+                                <View 
+                                    style={styles.sequenceItem}
+                                    key={item.slug}>
+                                    <Text>
+                                        {item.name} | {item.type} | {formatSec(item.duration)}
+                                    </Text>
+                                    {
+                                        idx !== workout.sequence.length -1 && 
+                                        <FontAwesome 
+                                            name="arrow-down"
+                                            size={20}
+                                        />
+                                    }
+                                    
+                                </View>
+
+                                )
+                        }
+
+                    </View>
+
+                </Modal>
+            </WorkoutItem>
             
-                />
         </View>
     );
 }
@@ -46,5 +81,13 @@ const styles = StyleSheet.create({
         fontSize: 20,
         marginBottom: 20,
         fontFamily: "montserrat-bold"
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent:'center',
+        alignItems: 'center',
+    },
+    sequenceItem:{
+        alignItems: 'center'
     }
 })
