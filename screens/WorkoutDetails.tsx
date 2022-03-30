@@ -32,12 +32,22 @@ export default function WorkoutDetailsScreen({navigation, route}: Navigation) {
         trackerIdx >= 0 ? sequence[trackerIdx].duration : -1
     );
     
+    useEffect(() => {
+        console.log(countDown);
+        if(!workout) { return; }
+
+        if(trackerIdx === workout.sequence.length - 1) { return; }
+
+        if(countDown === 0){
+            addItemToSequence(trackerIdx + 1);
+        }
+    }, [countDown]);
 
     
 
     const addItemToSequence = (idx: number) => {
         setSequence([...sequence, workout!.sequence[idx]]);
-        setTrackerIdx(0);
+        setTrackerIdx(idx);
     }
 
 
@@ -46,6 +56,8 @@ export default function WorkoutDetailsScreen({navigation, route}: Navigation) {
         return null;
     }
     
+
+    const hasReachedEnd = sequence.length === workout.sequence.length && countDown === 0;
 
     return (
         <View style={styles.container}>
@@ -86,7 +98,7 @@ export default function WorkoutDetailsScreen({navigation, route}: Navigation) {
 
                 </Modal>
             </WorkoutItem>
-            <View>
+            <View style={styles.centerView}>
                 {
                     sequence.length === 0 &&
                     <FontAwesome 
@@ -95,7 +107,26 @@ export default function WorkoutDetailsScreen({navigation, route}: Navigation) {
                         onPress={() => addItemToSequence(0)}
                     />
                 }
+
+                {
+                    sequence.length > 0 && countDown >= 0 && 
+                    <View>
+                        <Text style={styles.countDownText}>
+                            {countDown}
+                        </Text>
+                    </View>
+                }
                 
+            </View>
+            <View>
+                <Text>
+                    {
+                        sequence.length === 0 ? 
+                         "Prepare" : 
+                        hasReachedEnd ? 
+                        "Great Job" : sequence[trackerIdx].name 
+                    }
+                </Text>
             </View>
             
         </View>
@@ -119,5 +150,14 @@ const styles = StyleSheet.create({
     },
     sequenceItem:{
         alignItems: 'center'
+    },
+    centerView:{
+        flexDirection: "row",
+        justifyContent: "space-around",
+        alignItems: "center",
+        marginBottom: 20
+    },
+    countDownText: {
+        fontSize: 55
     }
 })
