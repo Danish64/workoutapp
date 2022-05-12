@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import * as Font from "expo-font";
-import { getWorkouts, initWorkouts } from "../storage/workout";
+import { clearWorkouts, getWorkouts, initWorkouts } from "../storage/workout";
 
 
 

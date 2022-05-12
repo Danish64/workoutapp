@@ -4,24 +4,29 @@ import { useEffect, useRef, useState } from "react";
 
 export default function useCountDown(
     idx: number,
-    initialCount: number
+    initialCount: number = -1
 ) { 
     const intervalRef = useRef<number>();
     const [countDown, setCountDown] = useState(-1);
+    const [isRunning, setIsRunning] = useState(false);
+    
 
     useEffect(() => {
         if(idx === -1) return;
 
-        intervalRef.current = window.setInterval(() => {
-            setCountDown((count) => {
-                // console.log(count);
-                return count - 1;
-            })
-        }, 50);
-
+        if(isRunning && !intervalRef.current){
+            // setIsRunning(true);
+            intervalRef.current = window.setInterval(() => {
+                setCountDown((count) => {
+                    // console.log(count);
+                    return count - 1;
+                })
+            }, 10);
+        }
+        
         return cleanup;
 
-    }, [idx]);
+    }, [idx, isRunning]);
 
     useEffect(() => {
         setCountDown(initialCount);
@@ -35,10 +40,19 @@ export default function useCountDown(
 
     const cleanup = () => {
         if(intervalRef.current){
+            setIsRunning(false);
             window.clearInterval(intervalRef.current);
             intervalRef.current = undefined;
         }
     }
 
-    return countDown;
+    return {
+        countDown,
+        isRunning,
+        stop: cleanup,
+        start: (count?: number) => {
+            setCountDown(count ?? initialCount);
+            setIsRunning(true);
+        }
+    };
 }

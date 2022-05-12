@@ -27,13 +27,11 @@ export default function WorkoutDetailsScreen({navigation, route}: Navigation) {
     const [trackerIdx, setTrackerIdx] = useState(-1);   
     const workout = useWorkoutBySlug(slug);
 
-    const countDown = useCountDown(
-        trackerIdx,
-        trackerIdx >= 0 ? sequence[trackerIdx].duration : -1
-    );
+
+    const { countDown, isRunning, stop, start } = useCountDown(trackerIdx);
     
     useEffect(() => {
-        console.log(countDown);
+        // console.log(countDown);
         if(!workout) { return; }
 
         if(trackerIdx === workout.sequence.length - 1) { return; }
@@ -46,8 +44,17 @@ export default function WorkoutDetailsScreen({navigation, route}: Navigation) {
     
 
     const addItemToSequence = (idx: number) => {
-        setSequence([...sequence, workout!.sequence[idx]]);
+        let newSequence = [];
+
+        if(idx > 0){
+            newSequence = [...sequence, workout!.sequence[idx]];
+        } else{
+            newSequence = [workout!.sequence[idx]];
+        }
+
+        setSequence(newSequence);
         setTrackerIdx(idx);
+        start(newSequence[idx].duration); 
     }
 
 
@@ -88,9 +95,7 @@ export default function WorkoutDetailsScreen({navigation, route}: Navigation) {
                                             size={20}
                                         />
                                     }
-                                    
                                 </View>
-
                                 )
                         }
 
@@ -98,31 +103,54 @@ export default function WorkoutDetailsScreen({navigation, route}: Navigation) {
 
                 </Modal>
             </WorkoutItem>
-            <View style={styles.centerView}>
-                {
-                    sequence.length === 0 &&
-                    <FontAwesome 
-                        name="play-circle-o"
-                        size={100}
-                        onPress={() => addItemToSequence(0)}
-                    />
-                }
+            <View style={styles.counterView}>
+                <View style={styles.counterItem}>
+                    {
+                        sequence.length === 0 ?
+                        <FontAwesome 
+                            name="play-circle-o"
+                            size={100}
+                            onPress={() => addItemToSequence(0)}
+                        /> : 
+                        isRunning ?
+                        <FontAwesome 
+                            name="stop-circle-o"
+                            size={100}
+                            onPress={() => stop()}
+                        /> :
+                        <FontAwesome 
+                            name="play-circle-o"
+                            size={100}
+                            onPress={() => {
+                                if(hasReachedEnd){
+                                    addItemToSequence(0);
+                                }else{
+                                    start(countDown)
+
+                                }
+                            }}
+                        />
+
+                    }
+                </View>
 
                 {
                     sequence.length > 0 && countDown >= 0 && 
-                    <View>
+                    <View style={styles.counterItem}>
                         <Text style={styles.countDownText}>
                             {countDown}
                         </Text>
                     </View>
                 }
+
+                
                 
             </View>
-            <View>
-                <Text>
+            <View style={{alignItems: "center"}}>
+                <Text style={{fontSize: 60, fontWeight: "bold" }}>
                     {
                         sequence.length === 0 ? 
-                         "Prepare" : 
+                        "Prepare" : 
                         hasReachedEnd ? 
                         "Great Job" : sequence[trackerIdx].name 
                     }
@@ -151,11 +179,15 @@ const styles = StyleSheet.create({
     sequenceItem:{
         alignItems: 'center'
     },
-    centerView:{
+    counterView:{
         flexDirection: "row",
         justifyContent: "space-around",
         alignItems: "center",
         marginBottom: 20
+    },
+    counterItem:{
+        flex: 1,
+        alignItems: "center"
     },
     countDownText: {
         fontSize: 55
