@@ -5,7 +5,7 @@ export interface SequenceItem {
     slug: string,
     name: string,
     duration: number,
-    type: SequenceItem,
+    type: SequenceType,
     reps?: number
 
 

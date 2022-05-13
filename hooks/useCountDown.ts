@@ -10,7 +10,6 @@ export default function useCountDown(
     const [countDown, setCountDown] = useState(-1);
     const [isRunning, setIsRunning] = useState(false);
     
-
     useEffect(() => {
         if(idx === -1) return;
 

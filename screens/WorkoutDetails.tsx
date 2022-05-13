@@ -26,6 +26,7 @@ export default function WorkoutDetailsScreen({navigation, route}: Navigation) {
     const [sequence, setSequence] = useState<SequenceItem[]>([]);
     const [trackerIdx, setTrackerIdx] = useState(-1);   
     const workout = useWorkoutBySlug(slug);
+    const startupSeq = ["Go", "1", "2", "3"]
 
 
     const { countDown, isRunning, stop, start } = useCountDown(trackerIdx);
@@ -54,15 +55,12 @@ export default function WorkoutDetailsScreen({navigation, route}: Navigation) {
 
         setSequence(newSequence);
         setTrackerIdx(idx);
-        start(newSequence[idx].duration); 
+        start(newSequence[idx].duration + startupSeq.length); 
     }
-
-
 
     if(!workout){
         return null;
-    }
-    
+    }    
 
     const hasReachedEnd = sequence.length === workout.sequence.length && countDown === 0;
 
@@ -103,58 +101,65 @@ export default function WorkoutDetailsScreen({navigation, route}: Navigation) {
 
                 </Modal>
             </WorkoutItem>
-            <View style={styles.counterView}>
-                <View style={styles.counterItem}>
+            <View style={styles.wrapper}>
+                <View style={styles.counterView}>
+                    <View style={styles.counterItem}>
+                        {
+                            sequence.length === 0 ?
+                            <FontAwesome 
+                                name="play-circle-o"
+                                size={100}
+                                onPress={() => addItemToSequence(0)}
+                            /> : 
+                            isRunning ?
+                            <FontAwesome 
+                                name="stop-circle-o"
+                                size={100}
+                                onPress={() => stop()}
+                            /> :
+                            <FontAwesome 
+                                name="play-circle-o"
+                                size={100}
+                                onPress={() => {
+                                    if(hasReachedEnd){
+                                        addItemToSequence(0);
+                                    }else{
+                                        start(countDown)
+
+                                    }
+                                }}
+                            />
+
+                        }
+                    </View>
+
                     {
-                        sequence.length === 0 ?
-                        <FontAwesome 
-                            name="play-circle-o"
-                            size={100}
-                            onPress={() => addItemToSequence(0)}
-                        /> : 
-                        isRunning ?
-                        <FontAwesome 
-                            name="stop-circle-o"
-                            size={100}
-                            onPress={() => stop()}
-                        /> :
-                        <FontAwesome 
-                            name="play-circle-o"
-                            size={100}
-                            onPress={() => {
-                                if(hasReachedEnd){
-                                    addItemToSequence(0);
-                                }else{
-                                    start(countDown)
-
+                        sequence.length > 0 && countDown >= 0 && 
+                        <View style={styles.counterItem}>
+                            <Text style={styles.countDownText}>
+                                {
+                                    countDown > sequence[trackerIdx].duration ?
+                                    startupSeq[countDown - sequence[trackerIdx].duration - 1] :
+                                    countDown
                                 }
-                            }}
-                        />
-
+                            </Text>
+                        </View>
                     }
+
+                    
+                    
                 </View>
 
-                {
-                    sequence.length > 0 && countDown >= 0 && 
-                    <View style={styles.counterItem}>
-                        <Text style={styles.countDownText}>
-                            {countDown}
-                        </Text>
-                    </View>
-                }
-
-                
-                
-            </View>
-            <View style={{alignItems: "center"}}>
-                <Text style={{fontSize: 60, fontWeight: "bold" }}>
-                    {
-                        sequence.length === 0 ? 
-                        "Prepare" : 
-                        hasReachedEnd ? 
-                        "Great Job" : sequence[trackerIdx].name 
-                    }
-                </Text>
+                <View style={{alignItems: "center"}}>
+                    <Text style={{fontSize: 60, fontWeight: "bold" }}>
+                        {
+                            sequence.length === 0 ? 
+                            "Prepare" : 
+                            hasReachedEnd ? 
+                            "Great Job" : sequence[trackerIdx].name 
+                        }
+                    </Text>
+                </View>
             </View>
             
         </View>
@@ -191,5 +196,12 @@ const styles = StyleSheet.create({
     },
     countDownText: {
         fontSize: 55
+    },
+    wrapper: {
+        borderRadius: 10,
+        borderColor: "rgba(0,0,0,0.1)",
+        backgroundColor: "#ffffff",
+        borderWidth: 1,
+        padding: 10
     }
 })
