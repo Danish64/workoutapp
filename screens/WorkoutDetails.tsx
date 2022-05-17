@@ -77,27 +77,32 @@ export default function WorkoutDetailsScreen({navigation, route}: Navigation) {
                         onPress={handleOpen}
                     />}
                 >
-                    <View>
-                        {
-                            workout.sequence.map((item, idx) => 
-                                <View 
-                                    style={styles.sequenceItem}
-                                    key={item.slug}>
-                                    <Text>
-                                        {item.name} | {item.type} | {formatSec(item.duration)}
-                                    </Text>
-                                    {
-                                        idx !== workout.sequence.length -1 && 
-                                        <FontAwesome 
-                                            name="arrow-down"
-                                            size={20}
-                                        />
-                                    }
-                                </View>
-                                )
-                        }
+                    {() => 
+                        <View>
+                            {
+                                workout.sequence.map((item, idx) => 
+                                    <View 
+                                        style={styles.sequenceItem}
+                                        key={item.slug}>
+                                        <Text>
+                                            {item.name} | {item.type} | {formatSec(item.duration)}
+                                        </Text>
+                                        {
+                                            idx !== workout.sequence.length -1 && 
+                                            <FontAwesome 
+                                                name="arrow-down"
+                                                size={20}
+                                            />
+                                        }
+                                    </View>
+                                    )
+                            }
 
-                    </View>
+                        </View>
+                    
+                    
+                    }
+                    
 
                 </Modal>
             </WorkoutItem>

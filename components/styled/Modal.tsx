@@ -8,7 +8,12 @@ type ModalProps = {
             handleOpen: () => void
         }
     >,
-    children: React.ReactNode
+    children: FunctionComponent<
+    {
+        handleOpen: () => void,
+        handleClose: () => void,
+    }
+>
 } 
 
 export function Modal({
@@ -16,22 +21,28 @@ export function Modal({
     children
 }: ModalProps) {
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+
+    const handleOpen = () => setIsModalVisible(true);
+    const handleClose = () => setIsModalVisible(false);
+
     return (
 
         <>
             <DefaultModal 
                     visible={isModalVisible}
-                    transparent
                     animationType="none"
                 >
                     <View style={styles.modalContainer}>
+
                         <View style={styles.contentView}>
-                            {children}
+
+                            {children({handleOpen, handleClose})}
+                            
                         </View>
+
                         <PressableText 
-                        text="Close"
-                        onPress={() => setIsModalVisible(false)}
-                    
+                            text="Close"
+                            onPress={handleClose}
                         />
 
                     </View>
@@ -41,11 +52,11 @@ export function Modal({
                 {   Activator ? 
 
                     <Activator 
-                        handleOpen={() => setIsModalVisible(true)}
+                        handleOpen={handleOpen}
                         /> :
                     <PressableText 
                         text=""
-                        onPress={() => setIsModalVisible(true)}
+                        onPress={handleOpen}
                     />
 
                 }

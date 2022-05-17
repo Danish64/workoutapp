@@ -20,7 +20,7 @@ export default function useCountDown(
                     // console.log(count);
                     return count - 1;
                 })
-            }, 10);
+            }, 1000);
         }
         
         return cleanup;

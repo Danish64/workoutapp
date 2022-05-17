@@ -3,6 +3,7 @@ import { NativeStackHeaderProps } from "@react-navigation/native-stack";
 import WorkoutItem from "../components/WorkoutItem";
 import { MontserratText } from "../components/styled/MontserratText";
 import { useWorkouts } from "../hooks/useWorkouts";
+import { ThemeText } from "../components/styled/Text";
 
 
 export default function HomeScreen({navigation}: NativeStackHeaderProps) {
@@ -14,7 +15,7 @@ export default function HomeScreen({navigation}: NativeStackHeaderProps) {
     return (
         <View style={styles.container}>
             {/* <Text style={styles.header}>Workouts</Text> */}
-            <MontserratText style={styles.header}>Workouts</MontserratText>
+            <ThemeText style={styles.header}>Workouts</ThemeText>
             <FlatList 
                 data={workouts}
                 keyExtractor={item => item.slug}

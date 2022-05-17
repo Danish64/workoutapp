@@ -25,7 +25,7 @@ export default function ExerciseForm({
 
     return(
         <View style={styles.container}>
-            <Text>Exercise Form</Text>
+            
             <View>
                 <View style={styles.rowContainer}>
                     <Controller 
@@ -124,7 +124,8 @@ export default function ExerciseForm({
 
 
                 <PressableText 
-                    text="Submit"
+                    text="Add Exercise"
+                    style={{marginTop:10, alignSelf: "center"}}
                     onPress={handleSubmit((data) => {
                         onSubmit(data as ExerciseFormData);
                     })}
